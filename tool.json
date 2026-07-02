@@ -1,0 +1,37 @@
+{
+  "name": "macos-verbs",
+  "binary": "verbs",
+  "description": "Deterministic macOS actions for agents: app lifecycle, clipboard, files, notifications, appearance, volume, speech, screenshots. One self-contained binary, no accessibility permissions required.",
+  "usage": "verbs <verb> [subcommand] [args] [--json]",
+  "exit_codes": {
+    "0": "success",
+    "1": "actionable failure (app not running, file missing, clipboard empty)",
+    "2": "system error",
+    "64": "usage error"
+  },
+  "output": {
+    "json_flag": "--json on every verb; one JSON object per invocation on stdout with ok:true and an action discriminator; errors are text on stderr",
+    "human": "single short line per action; lists are line-per-item"
+  },
+  "verbs": {
+    "app launch <name>": "launch by name, waits until running; confirmed:false in JSON if not seen within 5s",
+    "app quit <name> [--force]": "graceful terminate, --force if refused",
+    "app focus <name>": "bring running app to front",
+    "app frontmost": "the active application (name, bundle_id, pid)",
+    "app list [--all]": "running apps; --all includes background agents",
+    "clipboard get": "clipboard text; exit 1 if no text",
+    "clipboard set [text]": "from argument or stdin",
+    "open <path-or-url> [--with <app>]": "open with default or named app",
+    "reveal <path>": "select file in a Finder window",
+    "trash <path>": "move to Trash (recoverable; returns trashed_to path)",
+    "notify <msg> [--title] [--subtitle] [--sound]": "Notification Center banner",
+    "darkmode get|on|off|toggle": "system appearance; reports fresh-read state; first use prompts once for System Events automation",
+    "volume get|mute|unmute|0-100": "output volume",
+    "say <text> [--voice]": "speak aloud, blocks until finished",
+    "screenshot <path> [--main-display]": "capture to file; requires Screen Recording permission for the calling app, fails exit 1 with guidance otherwise"
+  },
+  "safety": {
+    "reads_are_idempotent": true,
+    "destructive_actions": "trash only (recoverable); no rm-style deletion exists in the tool"
+  }
+}
