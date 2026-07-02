@@ -10,9 +10,10 @@ struct Verbs: ParsableCommand {
         Exit codes: 0 = success, 1 = actionable failure (not running, \
         not found), 2 = system error, 64 = usage error.
         """,
-        version: "0.1.0",
+        version: "0.2.0",
         subcommands: [
             AppCommand.self,
+            WindowCommand.self,
             ClipboardCommand.self,
             OpenCommand.self,
             RevealCommand.self,

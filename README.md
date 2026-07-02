@@ -40,6 +40,11 @@ Requires macOS 13+ and Swift 5.9+ (Command Line Tools are enough — no Xcode).
 | `open <path-or-url> [--with <app>]` | Open with default or named app |
 | `reveal <path>` | Select the file in a Finder window |
 | `trash <path>` | Move to Trash — recoverable, unlike `rm` |
+| `window list [--app <name>]` | Windows with title, geometry, minimized state |
+| `window move <app> <x> <y> [--index]` | Move a window to screen coordinates |
+| `window resize <app> <w> <h> [--index]` | Resize a window |
+| `window minimize / unminimize <app> [--index]` | Dock a window / restore it |
+| `window raise <app> [--index]` | Raise a specific window and focus its app |
 | `notify <msg> [--title] [--subtitle] [--sound]` | Notification Center banner |
 | `darkmode get\|on\|off\|toggle` | System appearance |
 | `volume get\|mute\|unmute\|0-100` | Output volume |
@@ -76,10 +81,11 @@ Everything works with zero permission grants, except:
 |---|---|
 | `darkmode` | First use prompts once to allow controlling System Events (Automation). Subsequent calls are silent. |
 | `screenshot` | Full screen content requires Screen Recording permission for the *calling* app (your terminal / agent host). Without it the verb fails with exit 1 and a clear message pointing at System Settings. |
+| `window *` | Requires the **Accessibility** permission for the calling app (System Settings → Privacy & Security → Accessibility). Every window verb checks first and fails with exit 1 + guidance if ungranted — never silently, never mysteriously. |
 
-Deliberately **out of v1**: window management (move/resize/list) — it
-requires the Accessibility permission, which complicates unattended agent
-use. It's the natural v2 once the core proves out.
+The permission tiers are deliberate: an agent can use every tier-0 verb
+unattended out of the box, and each escalation (`window`) is a single
+explicit human grant with a clear error message pointing at it.
 
 ## Design notes
 
