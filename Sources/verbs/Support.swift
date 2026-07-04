@@ -37,10 +37,25 @@ enum Out {
     }
 }
 
-/// Actionable failure: the request was understood but couldn't be satisfied
-/// (app not running, file missing). Maps to exit code 1.
+enum VerbErrorKind: Int32 {
+    case actionable = 1
+    case system = 2
+}
+
+/// Runtime failure with the agent-facing exit classification attached.
 struct VerbError: Error, CustomStringConvertible {
     let message: String
+    let kind: VerbErrorKind
+
+    init(message: String, kind: VerbErrorKind = .actionable) {
+        self.message = message
+        self.kind = kind
+    }
+
+    static func system(_ message: String) -> VerbError {
+        VerbError(message: message, kind: .system)
+    }
+
     var description: String { message }
 }
 
@@ -63,14 +78,19 @@ func shell(_ tool: String, _ args: [String], stdin: String? = nil) throws -> Str
         inPipe.fileHandleForWriting.write(Data(stdin.utf8))
         inPipe.fileHandleForWriting.closeFile()
     }
-    try p.run()
+    do {
+        try p.run()
+    } catch {
+        throw VerbError.system(
+            "could not start \(tool): \(error.localizedDescription)")
+    }
     p.waitUntilExit()
     let stdout = String(
         data: out.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
     if p.terminationStatus != 0 {
         let stderr = String(
             data: err.fileHandleForReading.readDataToEndOfFile(), encoding: .utf8) ?? ""
-        throw VerbError(message: stderr.isEmpty
+        throw VerbError.system(stderr.isEmpty
             ? "\(tool) exited \(p.terminationStatus)"
             : stderr.trimmingCharacters(in: .whitespacesAndNewlines))
     }

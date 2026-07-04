@@ -45,7 +45,7 @@ struct ClipboardCommand: ParsableCommand {
             let pb = NSPasteboard.general
             pb.clearContents()
             guard pb.setString(value, forType: .string) else {
-                throw VerbError(message: "pasteboard write failed")
+                throw VerbError.system("pasteboard write failed")
             }
             Out.emit(out, human: "clipboard set (\(value.count) chars)",
                      data: ["action": "clipboard_set", "length": value.count])

@@ -1,7 +1,7 @@
 {
   "name": "macos-verbs",
   "binary": "verbs",
-  "description": "Deterministic macOS actions for agents: app lifecycle, clipboard, files, notifications, appearance, volume, speech, screenshots. One self-contained binary, no accessibility permissions required.",
+  "description": "Deterministic macOS actions for agents: app lifecycle, clipboard, files, notifications, appearance, volume, speech, screenshots. One self-contained binary with explicit permission tiers.",
   "usage": "verbs <verb> [subcommand] [args] [--json]",
   "exit_codes": {
     "0": "success",

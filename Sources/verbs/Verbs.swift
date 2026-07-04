@@ -1,4 +1,5 @@
 import ArgumentParser
+import Foundation
 
 @main
 struct Verbs: ParsableCommand {
@@ -25,4 +26,27 @@ struct Verbs: ParsableCommand {
             ScreenshotCommand.self,
         ]
     )
+
+    static func main() {
+        let parsed: ParsableCommand
+        do {
+            parsed = try parseAsRoot()
+        } catch {
+            exit(withError: error)
+        }
+
+        var command = parsed
+        do {
+            try command.run()
+        } catch let error as VerbError {
+            fail(error)
+        } catch {
+            exit(withError: error)
+        }
+    }
+
+    private static func fail(_ error: VerbError) -> Never {
+        FileHandle.standardError.write(Data("Error: \(error.message)\n".utf8))
+        exit(withError: ExitCode(error.kind.rawValue))
+    }
 }

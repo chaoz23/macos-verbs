@@ -67,7 +67,7 @@ struct TrashCommand: ParsableCommand {
             try FileManager.default.trashItem(
                 at: URL(fileURLWithPath: resolved), resultingItemURL: &trashed)
         } catch {
-            throw VerbError(message: "trash failed: \(error.localizedDescription)")
+            throw VerbError.system("trash failed: \(error.localizedDescription)")
         }
         Out.emit(out, human: "trashed \(resolved)",
                  data: ["action": "trash", "path": resolved,

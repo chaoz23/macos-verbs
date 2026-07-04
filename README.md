@@ -12,8 +12,8 @@ verbs darkmode toggle           verbs reveal ~/report.pdf
 verbs volume 40                 verbs trash ~/old-draft.txt
 ```
 
-No accessibility permissions required — every v1 verb works without TCC
-prompts (two documented exceptions below).
+Most verbs need no accessibility permissions or TCC prompts. The permission-
+gated exceptions are documented below.
 
 ## Install
 
