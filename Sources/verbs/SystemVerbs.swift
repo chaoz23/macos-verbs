@@ -1,4 +1,5 @@
 import ArgumentParser
+import CoreGraphics
 import Foundation
 
 struct NotifyCommand: ParsableCommand {
@@ -111,17 +112,17 @@ struct ScreenshotCommand: ParsableCommand {
     @OptionGroup var out: OutputOptions
 
     func run() throws {
+        guard CGPreflightScreenCaptureAccess() else {
+            throw VerbError(message:
+                "screen capture requires Screen Recording permission for the "
+                + "calling app (System Settings > Privacy & Security > "
+                + "Screen Recording)")
+        }
         let resolved = (path as NSString).expandingTildeInPath
         var args = ["-x"]  // no camera sound
         if mainDisplay { args.append("-m") }
         args.append(resolved)
-        do {
-            try shell("/usr/sbin/screencapture", args)
-        } catch let e as VerbError {
-            throw VerbError(message: e.message +
-                " (screen capture requires Screen Recording permission for the" +
-                " calling app: System Settings > Privacy & Security > Screen Recording)")
-        }
+        try shell("/usr/sbin/screencapture", args)
         guard FileManager.default.fileExists(atPath: resolved) else {
             throw VerbError(message: "screencapture produced no file")
         }
