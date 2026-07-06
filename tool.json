@@ -21,7 +21,7 @@
     "app list [--all]": "running apps; --all includes background agents",
     "clipboard get": "clipboard text; exit 1 if no text",
     "clipboard set [text]": "from argument or stdin",
-    "open <path-or-url> [--with <app>]": "open with default or named app",
+    "open <path-or-url> [--with <app>]": "open a path or any RFC-style URL scheme with the default or named app; prefix colon-containing filenames with ./",
     "reveal <path>": "select file in a Finder window",
     "trash <path>": "move to Trash (recoverable; returns trashed_to path)",
     "window list [--app <name>]": "windows with title, x/y/width/height, minimized; requires Accessibility permission (exit 1 with guidance if ungranted)",
