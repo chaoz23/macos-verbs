@@ -10,6 +10,7 @@ verbs app focus Safari          verbs clipboard get
 verbs app frontmost --json      verbs notify "Build done" --title CI
 verbs darkmode toggle           verbs reveal ~/report.pdf
 verbs volume 40                 verbs trash ~/old-draft.txt
+verbs open mailto:agent@example.com
 ```
 
 Most verbs need no accessibility permissions or TCC prompts. The permission-
@@ -37,7 +38,7 @@ Requires macOS 13+ and Swift 5.9+ (Command Line Tools are enough — no Xcode).
 | `app list [--all]` | Running apps (`--all` includes background agents) |
 | `clipboard get` | Print clipboard text (exit 1 if none) |
 | `clipboard set [text]` | Set from argument or stdin |
-| `open <path-or-url> [--with <app>]` | Open with default or named app |
+| `open <path-or-url> [--with <app>]` | Open a path or any URL scheme with the default or named app |
 | `reveal <path>` | Select the file in a Finder window |
 | `trash <path>` | Move to Trash — recoverable, unlike `rm` |
 | `window list [--app <name>]` | Windows with title, geometry, minimized state |
@@ -93,6 +94,9 @@ explicit human grant with a clear error message pointing at it.
   macOS exposes an API; `osascript` only where it doesn't (notifications,
   appearance, volume). App-name resolution goes through `open -a` —
   LaunchServices' own resolver, the most reliable name→app mapping there is.
+- URL detection follows RFC-style schemes, including `mailto:`, `tel:`, and
+  custom application schemes. Prefix a colon-containing filename with `./`
+  to force path interpretation.
 - State reported after a write comes from a **fresh read**, not the write's
   return value (the AppleScript `set` return was observed stale on
   back-to-back dark-mode toggles).

@@ -2,6 +2,18 @@ import AppKit
 import ArgumentParser
 import Foundation
 
+private func isURLTarget(_ target: String) -> Bool {
+    // Let callers force path interpretation for filenames that contain a
+    // colon, while accepting every RFC 3986 scheme (mailto:, tel:, custom
+    // application schemes), not only URLs that contain ://.
+    let pathPrefixes = ["/", "./", "../", "~"]
+    guard !pathPrefixes.contains(where: target.hasPrefix) else { return false }
+    return target.range(
+        of: #"^[A-Za-z][A-Za-z0-9+.-]*:"#,
+        options: .regularExpression
+    ) != nil
+}
+
 struct OpenCommand: ParsableCommand {
     static let configuration = CommandConfiguration(
         commandName: "open",
@@ -14,8 +26,8 @@ struct OpenCommand: ParsableCommand {
     func run() throws {
         var args: [String] = []
         if let with { args += ["-a", with] }
-        // Resolve relative paths; pass URLs through untouched.
-        let isURL = target.contains("://")
+        // Resolve paths; pass absolute URLs of any scheme through untouched.
+        let isURL = isURLTarget(target)
         let resolved = isURL
             ? target
             : URL(fileURLWithPath: (target as NSString).expandingTildeInPath).path
@@ -23,8 +35,7 @@ struct OpenCommand: ParsableCommand {
             throw VerbError(message: "no such file: \(resolved)")
         }
         args.append(resolved)
-        do { try shell("/usr/bin/open", args) }
-        catch let e as VerbError { throw e }
+        try shell("/usr/bin/open", args)
         Out.emit(out, human: "opened \(target)" + (with.map { " with \($0)" } ?? ""),
                  data: ["action": "open", "target": resolved,
                         "with": with ?? NSNull()])

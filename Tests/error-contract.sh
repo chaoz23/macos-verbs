@@ -54,5 +54,9 @@ assert_success version --version
 assert_failure 1 actionable open /definitely/not/a/real/macos-verbs-test-file --json
 assert_failure 2 system open README.md --with __MACOS_VERBS_MISSING_APP__ --json
 assert_failure 64 usage darkmode bananas --json
+assert_failure 2 mailto_url open mailto:agent@example.com --with __MACOS_VERBS_MISSING_APP__ --json
+assert_failure 2 custom_scheme open x-example-agent:task --with __MACOS_VERBS_MISSING_APP__ --json
+assert_failure 1 explicit_colon_path open ./definitely-missing:note --json
+assert_failure 1 invalid_scheme open 123:task --json
 
 echo "error contract passed"
