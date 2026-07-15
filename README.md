@@ -102,6 +102,36 @@ explicit human grant with a clear error message pointing at it.
   back-to-back dark-mode toggles).
 - Single static binary, no runtime dependencies, ~1s cold build check.
 
+## warden — the governance layer (preview)
+
+`verbs` gives an agent deterministic actions. **`warden`** governs them. It's a
+second binary in this repo: an MCP stdio server that sits between an agent and
+`verbs`, so every action an agent takes flows through one chokepoint that
+classifies it, executes it, and records it to a hash-chained provenance log.
+
+```bash
+swift build -c release
+./.build/release/warden serve          # MCP stdio server — point your agent here
+./.build/release/warden tools          # the governed registry + mutation classes
+./.build/release/warden log            # the hash-chained provenance ledger (~/.warden)
+```
+
+Each of the verbs is exposed as a typed MCP tool tagged with a **mutation
+class** — `read` / `reversible-write` / `snapshot-write` / `irreversible` — and,
+for reversible actions, the compensating action needed to undo it. Every call is
+appended to `~/.warden/provenance.jsonl` with agent identity, arguments, outcome,
+timing, and a SHA-256 hash chained to the prior record (tamper-evident lineage).
+
+This is the first increment (G0 mediation + G1 provenance) of a larger bet: as
+the Mac's primary user shifts from human to agent, the durable primitive isn't
+more actions — it's the **reversible, auditable governance envelope** around
+them. Policy/attenuation, `warden rewind`, approval gates, a supervisor UI, and
+cross-surface adapters are the road ahead. See [ROADMAP.md](ROADMAP.md).
+
+To wire it into an MCP client, run `warden serve` as the command (it speaks
+newline-delimited JSON-RPC over stdio). It finds `verbs` as a sibling binary, at
+`/usr/local/bin`, or on `PATH` — or set `WARDEN_VERBS_BIN`.
+
 ## License
 
 Apache-2.0
