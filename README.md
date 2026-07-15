@@ -21,9 +21,12 @@ gated exceptions are documented below.
 ```bash
 git clone https://github.com/chaoz23/macos-verbs
 cd macos-verbs
-swift build -c release
-cp .build/release/verbs /usr/local/bin/
+./install.sh                              # builds + installs verbs and warden to /usr/local/bin
+# or a user-local prefix, no sudo:
+PREFIX="$HOME/.local/bin" ./install.sh
 ```
+
+Or by hand: `swift build -c release && cp .build/release/{verbs,warden} /usr/local/bin/`.
 
 Requires macOS 13+ and Swift 5.9+ (Command Line Tools are enough — no Xcode).
 
