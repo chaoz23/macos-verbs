@@ -17,3 +17,5 @@ jobs:
         run: swift build
       - name: Test error contract
         run: bash Tests/error-contract.sh
+      - name: Test warden mediation + provenance
+        run: bash Tests/warden-smoke.sh

@@ -15,5 +15,11 @@ let package = Package(
             ],
             path: "Sources/verbs"
         ),
+        // warden — the mediation spine (Warden epic G0/G1). No external deps:
+        // an MCP stdio proxy that governs `verbs` and records provenance.
+        .executableTarget(
+            name: "warden",
+            path: "Sources/warden"
+        ),
     ]
 )
