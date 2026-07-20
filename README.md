@@ -30,6 +30,18 @@ Or by hand: `swift build -c release && cp .build/release/{verbs,warden} /usr/loc
 
 Requires macOS 13+ and Swift 5.9+ (Command Line Tools are enough — no Xcode).
 
+## Test
+
+The project uses shell-based contract tests because both binaries are executable
+tools. Run the same checks as CI with:
+
+```bash
+bash scripts/test.sh
+```
+
+`swift test` is not the test entrypoint for this repo; SwiftPM will report that
+there are no test targets.
+
 ## Verbs
 
 | Verb | What it does |
